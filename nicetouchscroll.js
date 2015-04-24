@@ -192,17 +192,19 @@ var NiceScroll = function(navElement,loc)  {
                         
 	            $(this.ul).on('mouseleave mouseup touchend',function(evt){
 
-                                
+                	    var element = null;      
+                      	    var options = {};
+                
 	                    if (! instance.touchstart) {
 	                        return;
-                        }
+                      	}
 
 	                    log('mouse/ touchend action');
                         
                         
 	                    if($(evt.target).context.localName !== 'li') {
                             
-	                        var element = $(evt.target).closest('li');
+	                        element = $(evt.target).closest('li');
                             
 	                        if (! element.length) {
 	                            element = false;
@@ -210,7 +212,7 @@ var NiceScroll = function(navElement,loc)  {
                             
 	                    } else {
                             
-	                        var element = $(evt.target);
+	                        element = $(evt.target);
 	                    }
                         
 	                    if(! instance.moving) {
@@ -267,7 +269,7 @@ var NiceScroll = function(navElement,loc)  {
 	                    } else {
 	                            moveType = 'moderate';
 	                            moveDistance = 145;
-	                            moveLength = 450
+	                            moveLength = 450;
 	                    }
 
 				        log("moveType: " + moveType);
@@ -276,10 +278,11 @@ var NiceScroll = function(navElement,loc)  {
 				        //closer than the furthest away from the start it can be, then move - adjusting afterwards
 				        //if we've gone too far
 				        if (instance.loc < 0 && instance.loc > instance.minLoc) {
+                  
+                  
 					        switch (instance.direction) {
 						        case 'adding' :
 
-	                                    var options = {};
 	                                    options[instance.positionProperty] = instance.loc + moveDistance > 50 ? 50 : instance.loc + moveDistance;
 	                                    log('about to animate - adding');
 	                                    $(instance.ul).animate(options,moveLength,'easeOutQuad',function(){
@@ -288,11 +291,9 @@ var NiceScroll = function(navElement,loc)  {
 	                                    });
 	                                    log('finished animating');
 	                                    return;
-	                                    break;
                                         
 	                            default :
 
-	                                    var options = {};
 	                                    options[instance.positionProperty] = instance.loc - moveDistance < instance.minLoc - 50 ? instance.minLoc - 50 : instance.loc - moveDistance;
 	                                    log('about to animate - reducing');
 	                                    $(instance.ul).animate(options,moveLength,'easeOutQuad',function(){
@@ -311,7 +312,6 @@ var NiceScroll = function(navElement,loc)  {
 				        //move it back to it's beginning
 				        if (instance.loc >= 1) {
 
-	                            var options = {};
 	                            options[instance.positionProperty] = 0;
 	                            $(instance.ul).animate(options,500,function(){
 	                                log('position >= 1 - moving back to beginning');
@@ -324,7 +324,6 @@ var NiceScroll = function(navElement,loc)  {
 	                    //move it back to the end
 	                    else if (instance.loc <= instance.minLoc) {
 
-	                            var options = {};
 	                            options[instance.positionProperty] = instance.minLoc;
 	                            $(instance.ul).animate(options,500,function(){
 	                                log('position <= minLoc - move back to end');
@@ -350,13 +349,14 @@ var NiceScroll = function(navElement,loc)  {
 			event.wheelDelta > 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');
 		});
 						
-}
+};
 
 //when we action a move, we check on completion of 
 //the move to see if if we need to reset in any way
 NiceScroll.prototype.adjustPosition = function(instance) {
 	    
-	log('about to adjust');
+	var options = {};
+  	log('about to adjust');
 
 	instance.loc = parseInt($(instance.ul).css(instance.positionProperty),10);
 		
@@ -366,7 +366,6 @@ NiceScroll.prototype.adjustPosition = function(instance) {
             
 	            log('instance.liDimension < instance.navWindow');
                 
-	            var options = {};
 	            options[instance.positionProperty] = 0;
                 
 	            $(instance.ul).animate(options,500,'easeOutQuad',function(){
@@ -381,9 +380,7 @@ NiceScroll.prototype.adjustPosition = function(instance) {
 	    if (instance.loc >= 1) {
             
 	            log('about to animate loc >= 1');
-
-		var options = {};
-		options[instance.positionProperty] = 0;
+				options[instance.positionProperty] = 0;
 
 	            $(instance.ul).animate(options,500,'easeOutQuad',function(){
                     
@@ -395,7 +392,7 @@ NiceScroll.prototype.adjustPosition = function(instance) {
 	    }
 
 	    if (instance.loc <= instance.minLoc) {
-	            var options = {};
+
 	            options[instance.positionProperty] = instance.minLoc;
 	            log('about to animate loc <= instance.minLoc');
 	            $(instance.ul).animate(options,500,'easeOutQuad',function(){
@@ -410,12 +407,13 @@ NiceScroll.prototype.adjustPosition = function(instance) {
 	    log('no adjustment, set moving = false');
 	    instance.moving = false;
         
-}
+};
 
 NiceScroll.prototype.setOrientationBasedProperties = function() {
 
 	this.orientation = (typeof $(this.nav).attr('data-view-orientation') === 'undefined' || ! $(this.nav).attr('data-view-orientation')) ? 'landscape' : $(this.nav).attr('data-view-orientation');
 	this.liDimension = 0;
+  	var navInner = null;
 
 	$(this.ul).css({left:0,top:0});
 
@@ -430,7 +428,7 @@ NiceScroll.prototype.setOrientationBasedProperties = function() {
 			this.marginEnd = 'margin-right';
 			this.paddingStart = 'padding-left';
 			this.paddingEnd = 'padding-right';
-			var navInner = $(this.nav).innerWidth();
+			navInner = $(this.nav).innerWidth();
 			$(this.ul).children('li').each(function(){
 				instance.liDimension += $(this).outerWidth(true) + 4;
 			});
@@ -444,7 +442,7 @@ NiceScroll.prototype.setOrientationBasedProperties = function() {
 			this.marginEnd = 'margin-bottom';
 			this.paddingStart = 'padding-top';
 			this.paddingEnd = 'padding-bottom';
-			var navInner = $(this.nav).innerHeight();
+			navInner = $(this.nav).innerHeight();
 			$(this.ul).children('li').each(function(){
 				instance.liDimension += $(this).outerHeight(true);
 			});
@@ -456,7 +454,7 @@ NiceScroll.prototype.setOrientationBasedProperties = function() {
 	this.minLoc = (this.liDimension - this.navWindow + this.ulStartOffset) * -1;
 	this.minLoc = this.minLoc - parseInt($(this.nav).css(this.paddingEnd),10);
 
-}
+};
 
 
 NiceScroll.prototype.handleMoveRequest = function(direction) {
@@ -471,5 +469,5 @@ NiceScroll.prototype.handleMoveRequest = function(direction) {
 		options[this.positionProperty] = newPosition;
 		 
 		var instance = this;
-		$(this.ul).animate(options,450,function(){instance.adjustPosition(instance)});
-}
+		$(this.ul).animate(options,450,function(){instance.adjustPosition(instance);});
+};
