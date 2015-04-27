@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////
 //
-//    NiceScroll 
+//    Nice Touch Scroll 
 //    Copyright 2015 Paul Darby
 //
 //    This program is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@
 
 
 
-var NiceScroll = function(navElement,loc)  {
+var NiceTouchScroll = function(navElement,loc)  {
 
 	    $ = $ || jQuery;
 	    if(typeof $ === 'undefined' || ! $) {
@@ -353,7 +353,7 @@ var NiceScroll = function(navElement,loc)  {
 
 //when we action a move, we check on completion of 
 //the move to see if if we need to reset in any way
-NiceScroll.prototype.adjustPosition = function(instance) {
+NiceTouchScroll.prototype.adjustPosition = function(instance) {
 	    
 	var options = {};
   	log('about to adjust');
@@ -409,7 +409,7 @@ NiceScroll.prototype.adjustPosition = function(instance) {
         
 };
 
-NiceScroll.prototype.setOrientationBasedProperties = function() {
+NiceTouchScroll.prototype.setOrientationBasedProperties = function() {
 
 	this.orientation = (typeof $(this.nav).attr('data-view-orientation') === 'undefined' || ! $(this.nav).attr('data-view-orientation')) ? 'landscape' : $(this.nav).attr('data-view-orientation');
 	this.liDimension = 0;
@@ -457,7 +457,7 @@ NiceScroll.prototype.setOrientationBasedProperties = function() {
 };
 
 
-NiceScroll.prototype.handleMoveRequest = function(direction) {
+NiceTouchScroll.prototype.handleMoveRequest = function(direction) {
 
 		$(this.ul).stop(true);
 
