@@ -340,14 +340,19 @@ var NiceTouchScroll = function(navElement,loc)  {
                                 
             });
         
-            $(this.ul).on( 'DOMMouseScroll mousewheel',function(evt) {
-                    var event = evt.originalEvent;
+            $(this.ul).on( 'DOMMouseScroll mousewheel',function(evt,delta) {
+                evt.preventDefault();
+                var event = evt.originalEvent;
 
-			if (typeof event.wheelDelta === 'undefined') return;
+                if (typeof event.wheelDelta === 'undefined') {
+                
+                    event.detail < 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');                    
+                    return;
+                }
 
-			evt.preventDefault();
-			event.wheelDelta > 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');
-		});
+
+		 event.wheelDelta > 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');
+	   });
 						
 };
 
