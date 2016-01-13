@@ -109,9 +109,6 @@ var NiceTouchScroll = function(navElement,loc)  {
 				
 		$(this.ul).on('touchmove',function(evt){
 
-	                    //log('touchmove');
-	                    //log('ul is moving: ' + instance.moving);
-                        
 	                    evt.preventDefault();
                                  
 	                    if (! instance.touchstart) 
@@ -122,8 +119,22 @@ var NiceTouchScroll = function(navElement,loc)  {
 	                        log('touchmove: set moving = true');
 	                    }
                                 
-	                    instance.previousMoveLoc = instance.moveLoc;
+	                    
 	                    var thisLoc = instance.orientation === 'landscape' ? evt.originalEvent.touches[0].pageX : evt.originalEvent.touches[0].pageY;
+
+	                    log("did it move?: " + (thisLoc !== instance.pageLoc));
+                        log("thisLoc" + thisLoc);
+                        log("pageLoc" + instance.pageLoc);
+                        log("move is: " + (Math.abs(thisLoc - instance.pageLoc)));
+
+                        if(Math.abs(thisLoc - instance.pageLoc) < 5) {
+                            log("move was only: " + Math.abs(instance.previousMoveLoc - instance.moveLoc) + " resetting move to false");
+                            instance.moving = false;
+                            return;
+                        }
+
+
+                        instance.previousMoveLoc = instance.moveLoc;
 	                    instance.moveLoc = thisLoc < instance.moveLoc ? instance.moveLoc - 1 : instance.moveLoc + 1;
                                                                         
 	                    instance.direction =  (instance.previousMoveLoc < instance.moveLoc) ? 'adding' : 'reducing';
@@ -169,12 +180,21 @@ var NiceTouchScroll = function(navElement,loc)  {
 	                                log('mousemove: set moving = true');
 	                            }
                         
-	                            instance.previousMoveLoc = instance.moveLoc;
 	                            var thisLoc = instance.orientation === 'landscape' ? evt.pageX : evt.pageY;
+
+	                            log("did it move?: " + (thisLoc !== instance.pageLoc));
+                                log("thisLoc" + thisLoc);
+                                log("pageLoc" + instance.pageLoc);
+                                log("move is: " + (Math.abs(thisLoc - instance.pageLoc)));
+
+                                if(Math.abs(thisLoc - instance.pageLoc) < 5) {
+                                    log("move was only: " + Math.abs(instance.previousMoveLoc - instance.moveLoc) + " resetting move to false");
+                                    instance.moving = false;
+                                    return;
+                                }
+
+                                instance.previousMoveLoc = instance.moveLoc;
 	                            instance.moveLoc = thisLoc < instance.moveLoc ? instance.moveLoc - 1 : instance.moveLoc + 1;
-                                
-	                            log("did it move?: " + (instance.previousMoveLoc !== instance.moveLoc));
-                                
 	                            instance.direction =  (instance.previousMoveLoc < instance.moveLoc) ? 'adding' : 'reducing';
                                 
 	                            $(instance.ul).css(instance.positionProperty,instance.loc + thisLoc- instance.pageLoc);
@@ -351,8 +371,8 @@ var NiceTouchScroll = function(navElement,loc)  {
                 }
 
 
-		 event.wheelDelta > 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');
-	   });
+			    event.wheelDelta > 0 ? instance.handleMoveRequest('adding') : instance.handleMoveRequest('reducing');
+		    });
 						
 };
 
@@ -416,7 +436,7 @@ NiceTouchScroll.prototype.adjustPosition = function(instance) {
 
 NiceTouchScroll.prototype.setOrientationBasedProperties = function() {
 
-	this.orientation = (typeof $(this.nav).attr('data-view-orientation') === 'undefined' || ! $(this.nav).attr('data-view-orientation')) ? 'landscape' : $(this.nav).attr('data-view-orientation');
+    this.orientation = (typeof $(this.nav).attr('data-view-orientation') === 'undefined' || ! $(this.nav).attr('data-view-orientation')) ? 'landscape' : $(this.nav).attr('data-view-orientation');
 	this.liDimension = 0;
   	var navInner = null;
 
